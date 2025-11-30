@@ -62,10 +62,11 @@ ROOT_URLCONF = 'gym_system.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'gestion', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'gestion', 'templates')],  # <--- ESTA ES LA CLAVE
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
