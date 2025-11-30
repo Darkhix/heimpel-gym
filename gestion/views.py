@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Sum
 from django.utils import timezone
-from .models import Pago, Cliente, Membresia
+from .models import Pago, Cliente, Membresia, Plan  # <--- ¡Agrega Plan aquí!
 from .forms import RegistroClienteForm
 from datetime import date
 from django.contrib.auth.hashers import make_password, check_password
