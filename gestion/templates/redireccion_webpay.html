@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conectando con Webpay...</title>
+</head>
+<body onload="document.getElementById('webpay-form').submit();">
+    
+    <div style="text-align: center; margin-top: 20%; font-family: sans-serif;">
+        <img src="https://raw.githubusercontent.com/TransbankDevelopers/transbank-sdk-python/master/images/webpay-plus.png" width="200">
+        <h2>Te estamos derivando al sitio seguro de Transbank...</h2>
+        <p>Por favor espera.</p>
+    </div>
+
+    <form action="{{ url }}" method="POST" id="webpay-form">
+        <input type="hidden" name="token_ws" value="{{ token }}" />
+    </form>
+
+</body>
+</html>

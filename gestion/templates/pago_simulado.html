@@ -2,57 +2,117 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Realizar Pago - Heimpel Gym</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Heimpel Gym</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
     <style>
-        body { background-color: #111418; color: white; font-family: 'Segoe UI', sans-serif; }
-        .card-pay { background-color: #1c2127; border: 1px solid #333; border-radius: 15px; }
-        .price-tag { font-size: 3rem; font-weight: 900; color: #FFC107; }
-        .bank-info { background-color: #0f1114; padding: 20px; border-radius: 10px; border-left: 4px solid #FFC107; }
-        .btn-pay { background-color: #25D366; color: white; font-weight: bold; font-size: 1.2rem; } /* Verde estilo WhatsApp/Pago */
-        .btn-pay:hover { background-color: #20bd5a; color: white; transform: scale(1.02); }
+        body { 
+            background-color: #111418; 
+            color: white; 
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-pay { 
+            background-color: #1c2127; 
+            border: 1px solid #333; 
+            border-radius: 20px; 
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-header-custom {
+            background-color: #FFC107;
+            color: black;
+            padding: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-tag { 
+            font-size: 3.5rem; 
+            font-weight: 900; 
+            color: #FFC107; 
+            text-shadow: 0 0 20px rgba(255, 193, 7, 0.2);
+        }
+
+        .btn-webpay { 
+            background-color: #ec0000; /* Rojo Transbank */
+            color: white; 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-webpay:hover { 
+            background-color: #cc0000; 
+            color: white; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(236, 0, 0, 0.4);
+        }
+
+        .secure-badge {
+            background-color: #0f1114;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+            border: 1px solid #333;
+        }
     </style>
 </head>
 <body>
 
-<div class="container py-5">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card card-pay shadow-lg p-4 text-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card card-pay text-center">
                 
-                <h3 class="mb-4 text-white-50">Resumen de Inscripción</h3>
-                
-                <div class="mb-3">
-                    <i class="bi bi-wallet2 text-warning" style="font-size: 4rem;"></i>
+                <div class="card-header-custom">
+                    Resumen de Compra
                 </div>
 
-                <h2 class="fw-bold">{{ cliente.nombre }}</h2>
-                <p class="text-white-50">Estás contratando: <strong class="text-white">{{ plan.nombre }}</strong></p>
-                
-                <hr class="border-secondary my-4">
-                
-                <p class="mb-0 text-uppercase small fw-bold text-white-50">Total a Pagar</p>
-                <div class="price-tag mb-4">${{ monto }}</div>
+                <div class="card-body p-5">
+                    
+                    <h4 class="fw-bold mb-1">{{ cliente.nombre }}</h4>
+                    <p class="text-white-50 small mb-4">RUT: {{ cliente.dni }}</p>
+                    
+                    <hr class="border-secondary my-4">
 
-                <div class="bank-info text-start mb-4">
-                    <h5 class="text-warning mb-3"><i class="bi bi-bank"></i> Datos de Transferencia</h5>
-                    <p class="mb-1"><strong>Banco:</strong> BancoEstado (Cuenta RUT)</p>
-                    <p class="mb-1"><strong>Titular:</strong> Miguel Gutierrez</p>
-                    <p class="mb-1"><strong>RUT:</strong> 12.345.678-9</p>
-                    <p class="mb-0"><strong>Email:</strong> pagos@heimpelgym.cl</p>
-                </div>
+                    <p class="text-uppercase text-white-50 fw-bold mb-2 small">Estás contratando</p>
+                    <h3 class="fw-bold text-white mb-3">{{ plan.nombre }}</h3>
+                    
+                    <div class="price-tag mb-4">${{ monto }}</div>
 
-                <form action="{% url 'procesar_pago' cliente.id %}" method="POST">
-                    {% csrf_token %}
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-pay py-3 rounded-pill shadow">
-                            <i class="bi bi-check-circle-fill"></i> CONFIRMAR TRANSFERENCIA
-                        </button>
+                    <div class="mb-4">
+                        <img src="https://publico.transbank.cl/image/journal/article?img_id=669579&t=1530740924976" alt="Webpay Plus" style="width: 200px; opacity: 0.9;">
                     </div>
-                    <small class="text-muted mt-2 d-block">Al hacer clic, el pago se registrará automáticamente.</small>
-                </form>
 
+                    <div class="secure-badge mb-4">
+                        <i class="bi bi-shield-lock-fill text-success me-2"></i>
+                        Serás redirigido al sitio seguro de Transbank.
+                    </div>
+
+                    <form action="{% url 'iniciar_webpay' cliente.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-webpay py-3 rounded-pill">
+                                PAGAR AHORA <i class="bi bi-arrow-right-circle-fill ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4">
+                        <a href="/" class="text-white-50 small text-decoration-none">Cancelar y volver al inicio</a>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>

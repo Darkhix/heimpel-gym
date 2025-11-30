@@ -6,6 +6,13 @@ from .forms import RegistroClienteForm
 from datetime import date
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+import random
+from transbank.webpay.webpay_plus.transaction import Transaction
+from transbank.common.options import WebpayOptions
+from transbank.common.integration_type import IntegrationType
+from django.views.decorators.csrf import csrf_exempt # Para que Transbank pueda volver
 def dashboard(request):
     # 1. Calcular Ganancia Total Histórica (Suma todo lo que hay en la tabla Pagos)
     total_ganado = Pago.objects.aggregate(Sum('monto'))['monto__sum'] or 0
@@ -136,3 +143,100 @@ def procesar_pago_real(request, cliente_id):
     
     # Enviamos a la pantalla de éxito final
     return render(request, 'exito.html', {'nombre': cliente.nombre})
+def configuracion_inicial(request):
+    # 1. CREAR SUPERUSUARIO (DUEÑO)
+    # Cambia 'admin' y '1234' por el usuario y contraseña que quieras
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@heimpel.cl', '1234')
+        mensaje_user = "✅ Usuario 'admin' creado (Clave: 1234)<br>"
+    else:
+        mensaje_user = "ℹ️ El usuario 'admin' ya existía<br>"
+
+    # 2. CREAR PLANES
+    planes = [
+        {"nombre": "Plan Estudiante Libre", "precio": 35000, "dias": 30},
+        {"nombre": "Plan Estudiante Semi Personalizado", "precio": 45000, "dias": 30},
+        {"nombre": "Plan Libre", "precio": 45000, "dias": 30},
+        {"nombre": "Plan Semi Personalizado", "precio": 60000, "dias": 30},
+    ]
+
+    mensaje_planes = ""
+    for p in planes:
+        obj, created = Plan.objects.get_or_create(
+            nombre=p['nombre'],
+            defaults={'precio': p['precio'], 'duracion_dias': p['dias']}
+        )
+        if created:
+            mensaje_planes += f"✅ Plan creado: {p['nombre']}<br>"
+        else:
+            mensaje_planes += f"ℹ️ Plan ya existía: {p['nombre']}<br>"
+
+    return HttpResponse(f"<h1>Configuración Completa</h1>{mensaje_user}{mensaje_planes}<br><a href='/'>Volver al Inicio</a>")
+def iniciar_webpay(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    membresia = Membresia.objects.filter(cliente=cliente).last()
+    monto = int(membresia.plan.precio)
+    
+    # 1. Configuración de Transbank (Modo Pruebas)
+    tx = Transaction(WebpayOptions(
+        commerce_code="597055555532", # Código oficial de pruebas
+        api_key="579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C", # Llave oficial de pruebas
+        integration_type=IntegrationType.TEST
+    ))
+    
+    # 2. Datos de la compra
+    buy_order = str(random.randrange(1000000, 99999999)) # Orden única
+    session_id = str(cliente.id)
+    
+    # IMPORTANTE: Cambia esto por TU URL DE RENDER cuando subas
+    # En tu PC usa: http://127.0.0.1:8000/webpay-retorno/
+    # En Render usa: https://heimpel-gym-1.onrender.com/webpay-retorno/
+    return_url = request.build_absolute_uri('/webpay-retorno/') 
+
+    # 3. Crear la transacción
+    response = tx.create(buy_order, session_id, monto, return_url)
+    
+    # 4. Redirigir al usuario al formulario de Transbank
+    return render(request, 'redireccion_webpay.html', {
+        'url': response['url'],
+        'token': response['token']
+    })
+
+@csrf_exempt # Necesario porque Transbank nos envía datos de vuelta
+def confirmar_webpay(request):
+    # Recibimos el token que manda Transbank
+    token = request.GET.get("token_ws") or request.POST.get("token_ws")
+    
+    try:
+        # 1. Confirmar la transacción con Transbank
+        tx = Transaction(WebpayOptions(
+            commerce_code="597055555532", 
+            api_key="579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C",
+            integration_type=IntegrationType.TEST
+        ))
+        
+        response = tx.commit(token) # Preguntamos: ¿Pagó de verdad?
+        
+        # 2. Si el estado es AUTHORIZED (Aprobado)
+        if response['status'] == 'AUTHORIZED':
+            cliente_id = response['session_id']
+            monto = response['amount']
+            cliente = Cliente.objects.get(id=cliente_id)
+            
+            # Guardamos el pago real en la base de datos
+            Pago.objects.create(
+                cliente=cliente,
+                monto=monto,
+                metodo='WEBPAY'
+            )
+            
+            # Llevamos al éxito
+            return render(request, 'exito.html', {'nombre': cliente.nombre})
+            
+        else:
+            # Si el pago falló o lo anularon
+            return HttpResponse("El pago fue rechazado o anulado por Transbank.")
+            
+    except Exception as e:
+        # Si algo explota (token inválido, etc)
+        return HttpResponse(f"Error en la transacción: {e}")
