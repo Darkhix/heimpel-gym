@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil - Heimpel Gym</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { 
+            background-color: #111418; 
+            color: white; /* Color base blanco para todo el texto */
+            font-family: 'Segoe UI', sans-serif; 
+        }
+        
+        /* BARRA DE NAVEGACIÓN */
+        .navbar { 
+            background-color: #000; 
+            border-bottom: 2px solid #FFC107; 
+        }
+
+        /* TARJETAS OSCURAS */
+        .card-dark { 
+            background-color: #1c2127; 
+            border: 1px solid #333; 
+            border-radius: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        
+        /* CÍRCULO DE DÍAS RESTANTES */
+        .circle-wrap { 
+            width: 160px; height: 160px; 
+            background: #2a2f38; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto; 
+            border: 6px solid #FFC107; 
+            box-shadow: 0 0 25px rgba(255, 193, 7, 0.4); 
+        }
+        .days-number { font-size: 4rem; font-weight: 900; color: #FFC107; line-height: 1; }
+        .days-label { font-size: 0.9rem; text-transform: uppercase; color: #fff; font-weight: bold; }
+        
+        /* ETIQUETAS DE ESTADO */
+        .status-badge { font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold;}
+        .bg-active { background-color: #198754; color: white; box-shadow: 0 0 10px rgba(25, 135, 84, 0.5); }
+        .bg-expired { background-color: #dc3545; color: white; box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);}
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark mb-4 px-3 d-flex justify-content-between">
+    <div class="d-flex align-items-center">
+        <a href="/" class="btn btn-outline-warning btn-sm me-3 fw-bold">
+            <i class="bi bi-house-door-fill"></i> INICIO
+        </a>
+        <span class="navbar-brand mb-0 h1 fw-bold" style="color: #FFC107;">HEIMPEL POWER GYM</span>
+    </div>
+
+    <a href="/" class="btn btn-outline-light btn-sm text-white-50">
+        <i class="bi bi-box-arrow-right"></i> Salir
+    </a>
+</nav>
+
+<div class="container pb-5">
+    <div class="row">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card card-dark p-4 h-100 text-center">
+                <div class="mb-4">
+                    <img src="https://ui-avatars.com/api/?name={{ cliente.nombre }}&background=FFC107&color=000&size=120&bold=true" class="rounded-circle mb-3 shadow">
+                    
+                    <h3 class="text-white fw-bold mb-1">{{ cliente.nombre }}</h3>
+                    <p class="text-white-50 mb-0">{{ cliente.email }}</p>
+                </div>
+                
+                <hr class="border-secondary my-4">
+                
+                <div class="text-start align-self-center d-inline-block">
+                    <div class="mb-3">
+                        <span class="text-warning small fw-bold">📞 TELÉFONO</span><br>
+                        <span class="text-white fs-5">{{ cliente.telefono }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-warning small fw-bold">🆔 RUT/DNI</span><br>
+                        <span class="text-white fs-5">{{ cliente.dni }}</span>
+                    </div>
+                    {% if cliente.contacto_emergencia %}
+                    <div class="mb-3">
+                        <span class="text-danger small fw-bold">🚑 EMERGENCIA</span><br>
+                        <span class="text-white">{{ cliente.contacto_emergencia }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="card card-dark p-5">
+                <h3 class="mb-5 border-bottom border-secondary pb-3 text-white text-uppercase fw-bold">
+                    Estado de Membresía
+                </h3>
+                
+                <div class="row align-items-center mb-5">
+                    <div class="col-md-5 text-center mb-4 mb-md-0">
+                        <div class="circle-wrap">
+                            <div>
+                                <div class="days-number">{{ dias_restantes }}</div>
+                                <div class="days-label">Días Restantes</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-7 ps-md-5">
+                        <div class="mb-4">
+                            <h6 class="text-white-50 text-uppercase mb-1">Plan Actual:</h6>
+                            <p class="fs-2 text-warning fw-bolder mb-0" style="letter-spacing: -1px;">
+                                {{ membresia.plan.nombre|default:"Sin Plan Activo" }}
+                            </p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="text-white-50 text-uppercase mb-2">Estado:</h6>
+                            <p>
+                                {% if estado == 'Activo' %}
+                                    <span class="status-badge bg-active">✅ ACTIVO</span>
+                                {% else %}
+                                    <span class="status-badge bg-expired">❌ VENCIDO</span>
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h6 class="text-white-50 text-uppercase mb-1">Vence el:</h6>
+                            <p class="fs-4 text-white fw-bold">
+                                {% if membresia.fecha_fin %}
+                                    {{ membresia.fecha_fin|date:"d F Y" }}
+                                {% else %}
+                                    --/--/----
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if estado == 'Activo' %}
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between text-white-50 mb-2 small fw-bold text-uppercase">
+                        <span>Inicio</span>
+                        <span>Progreso del plan</span>
+                        <span>Fin</span>
+                    </div>
+                    <div class="progress" style="height: 15px; background-color: #0f1114; border-radius: 10px; padding: 2px;">
+                        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" style="width: {{ porcentaje }}%;"></div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if estado == 'Vencido' %}
+                <div class="mt-5 text-center">
+                    <h4 class="text-white mb-3">Tu plan ha expirado</h4>
+                    <a href="/" class="btn btn-danger btn-lg fw-bold px-5 py-3 rounded-pill shadow-lg">
+                        ¡RENOVAR AHORA! 🔥
+                    </a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

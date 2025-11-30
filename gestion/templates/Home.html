@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heimpel Power Gym - Osorno</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        /* ESTILOS BASADOS EN TU FLYER */
+        :root {
+            --primary-color: #FFC107; /* El Amarillo del Flyer */
+            --text-color: #ffffff;
+            --dark-bg: #111418;       /* Fondo oscuro casi negro */
+            --card-bg: #1c2127;       /* Fondo de las tarjetas */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden; /* Evita desplazamiento horizontal en celular */
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background-color: rgba(17, 20, 24, 0.95);
+            border-bottom: 1px solid #333;
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        /* HERO SECTION (PORTADA) */
+        .hero {
+            min-height: 90vh; /* Cambiado a min-height para que no corte en celulares largos */
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 50px 20px; /* Agregado padding lateral para móviles */
+        }
+
+        .hero h1 {
+            font-size: 5rem; 
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        /* AJUSTES PARA CELULAR (Media Queries) */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3.5rem; } /* Texto más pequeño en celular */
+            .hero h2 { font-size: 2rem; }
+            .btn-inscripcion { width: 100%; padding: 15px 0; } /* Botón ancho completo */
+            .navbar-brand { font-size: 1.2rem; }
+            .plan-card { margin-bottom: 20px; } /* Más espacio entre tarjetas */
+        }
+
+        /* BOTONES */
+        .btn-inscripcion {
+            background-color: var(--primary-color);
+            color: #000;
+            padding: 15px 50px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            border-radius: 5px;
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-inscripcion:hover {
+            background-color: #fff;
+            transform: scale(1.05);
+            color: #000;
+        }
+        
+        /* BOTONES DE PLANES (Uniformidad) */
+        .btn-plan {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+            font-weight: bold;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+        .btn-plan:hover {
+            background-color: var(--primary-color);
+            color: black;
+            transform: translateY(-2px);
+        }
+
+        /* TARJETAS DE PLANES */
+        .plan-card {
+            background-color: var(--card-bg);
+            border: 1px solid #444;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .plan-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 20px rgba(255, 193, 7, 0.1);
+        }
+        
+        .plan-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        /* CONTACTO */
+        .footer-info {
+            background-color: #000;
+            padding: 40px 0;
+            border-top: 4px solid var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">HEIMPEL POWER GYM</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center mt-3 mt-lg-0">
+                    
+                    <li class="nav-item ms-lg-3 w-100 w-lg-auto mb-2 mb-lg-0">
+                        <a href="/acceso-socios/" class="btn btn-warning fw-bold px-4 w-100">
+                            <i class="bi bi-person-circle"></i> SOY SOCIO
+                        </a>
+                    </li>
+
+                    <li class="nav-item ms-lg-3 w-100 w-lg-auto">
+                        <a href="/admin" class="btn btn-outline-secondary btn-sm text-white-50 w-100">
+                            <i class="bi bi-gear-fill"></i> Staff
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h2>DESAFÍA</h2>
+            <h1>TUS <span style="color: white;">LÍMITES</span></h1>
+            <p class="lead text-white mb-5 fs-4">Lord Cochrane 586, 4to Piso</p>
+            <a href="/registro/" class="btn btn-inscripcion">¡INSCRÍBETE AHORA!</a>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container py-5">
+            <h2 class="text-center mb-5 fw-bold text-uppercase" style="color: var(--primary-color);">Nuestros Planes</h2>
+            
+            <div class="row g-4">
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card plan-card text-white p-4 text-center">
+                        <div>
+                            <div class="plan-title">PLAN ESTUDIANTE LIBRE</div>
+                            <div class="plan-price">$35.000</div>
+                            <ul class="list-unstyled text-muted mb-4 small">
+                                <li>Presentar credencial</li>
+                                <li>Acceso Full</li>
+                                <li>Sin horarios</li>
+                            </ul>
+                        </div>
+                        <a href="/registro/" class="btn btn-plan w-100 rounded-pill">ELEGIR</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="card plan-card text-white p-4 text-center">
+                        <div>
+                            <div class="plan-title">PLAN ESTUDIANTE SEMI PERSONALIZADO</div>
+                            <div class="plan-price">$45.000</div>
+                            <ul class="list-unstyled text-muted mb-4 small">
+                                <li>Guía de profesor</li>
+                                <li>Rutina adaptada</li>
+                                <li>Seguimiento</li>
+                            </ul>
+                        </div>
+                        <a href="/registro/" class="btn btn-plan w-100 rounded-pill">ELEGIR</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="card plan-card text-white p-4 text-center border-warning">
+                        <div>
+                            <div class="badge bg-danger mb-2">MÁS POPULAR</div>
+                            <div class="plan-title">PLAN LIBRE</div>
+                            <div class="plan-price">$45.000</div>
+                            <ul class="list-unstyled text-muted mb-4 small">
+                                <li>Entrena a tu ritmo</li>
+                                <li>Acceso total máquinas</li>
+                                <li>Horario libre</li>
+                            </ul>
+                        </div>
+                        <a href="/registro/" class="btn btn-plan w-100 rounded-pill">ELEGIR</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="card plan-card text-white p-4 text-center">
+                        <div>
+                            <div class="plan-title">PLAN SEMI PERSONALIZADO</div>
+                            <div class="plan-price">$60.000</div>
+                            <ul class="list-unstyled text-muted mb-4 small">
+                                <li>Atención dedicada</li>
+                                <li>Evaluación física</li>
+                                <li>Objetivos específicos</li>
+                            </ul>
+                        </div>
+                        <a href="/registro/" class="btn btn-plan w-100 rounded-pill">ELEGIR</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-info text-center text-white">
+        <div class="container">
+            <div class="row align-items-center gy-4"> <div class="col-md-4">
+                    <i class="bi bi-geo-alt-fill fs-2" style="color: var(--primary-color);"></i>
+                    <h5 class="mt-2 fw-bold">UBICACIÓN</h5>
+                    <p class="mb-0">Lord Cochrane 586, 4to Piso<br>Osorno</p>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="fw-bold fst-italic mb-0">HEIMPEL POWER GYM</h2>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-whatsapp fs-2" style="color: var(--primary-color);"></i>
+                    <h5 class="mt-2 fw-bold">CONTACTO</h5>
+                    <p class="mb-0">+56 9 3588 7716</p>
+                </div>
+            </div>
+            <div class="mt-4 text-muted small">
+                &copy; 2025 Heimpel Power Gym. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

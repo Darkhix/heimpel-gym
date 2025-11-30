@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - GymSystem</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        /* 1. Fondo moderno con degradado */
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 2. Tarjeta flotante */
+        .card-registro {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            overflow: hidden; /* Para que la cabecera no se salga */
+        }
+
+        .card-header {
+            background-color: #ffffff;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 25px;
+        }
+
+        .gym-icon {
+            font-size: 3rem;
+            color: #1e3c72;
+        }
+
+        /* 3. Inputs estilizados */
+        .form-control, .form-select {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e1e1;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .form-control:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 0.2rem rgba(30, 60, 114, 0.15);
+            background-color: #fff; 
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* 4. BOTÓN BONITO */
+        .btn-gym {
+            background: #ff416c;  /* Un color que resalta */
+            background: -webkit-linear-gradient(to right, #ff4b1f, #ff416c);
+            background: linear-gradient(to right, #ff4b1f, #ff416c);
+            border: none;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gym:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            color: white;
+        }
+
+        /* 5. MENSAJES DE ERROR LIMPIOS */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .error-message i {
+            margin-right: 5px;
+        }
+        
+        /* Ocultar las listas de error por defecto de Django */
+        ul.errorlist {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="btn btn-dark border-secondary position-absolute top-0 start-0 m-3 text-warning fw-bold shadow">
+    <i class="bi bi-house-door-fill"></i> Inicio
+</a>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card card-registro">
+                
+                <div class="card-header text-center">
+                    <div class="gym-icon mb-2">💪</div>
+                    <h3 class="fw-bold" style="color: #333;">Únete al Club</h3>
+                    <p class="text-muted mb-0 small">Completa tus datos para empezar</p>
+                </div>
+
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger py-2 small rounded-3 border-0 bg-danger text-white bg-opacity-75">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+                        
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ field.label }}</label>
+                                
+                                {{ field }}
+
+                                {% if field.errors %}
+                                    <div class="error-message">
+                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                        <span>{{ field.errors.0 }}</span>
+                                    </div>
+                                    <script>
+                                        document.getElementById("{{ field.id_for_label }}").classList.add("is-invalid");
+                                    </script>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-grid gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn btn-gym">
+                                CONFIRMAR INSCRIPCIÓN
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer text-center bg-white py-3 border-0">
+                    <small class="text-muted">¿Ya tienes cuenta? Habla con administración.</small>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
